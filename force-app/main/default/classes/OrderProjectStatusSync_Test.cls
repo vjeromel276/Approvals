@@ -1,4 +1,4 @@
-@isTest(seeAllData=true)
+@isTest//took of the cachable
 public class OrderProjectStatusSync_Test {
     testMethod static void runOrd() {
         Order ord = [SELECT ID FROM Order WHERE Project_Status__c = 'On Track' AND Date_Project_Created__c != NULL LIMIT 1];
