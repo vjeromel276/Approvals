@@ -1,0 +1,6 @@
+// Use in EVP_APPROVALS
+
+SELECT Id, ROI__c, ROI__r.VP_ROI__c, ROI__r.Director_ROI__c, ROI__r.Sales_Rep_ROI__c 
+  FROM SBQQ__Quote__c 
+  WHERE Id = 'aCU3C000000LAHRWA4' 
+  LIMIT 1

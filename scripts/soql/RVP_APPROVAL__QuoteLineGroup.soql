@@ -1,0 +1,6 @@
+// Use in EVP_APPROVALS
+
+SELECT Requires_Director_ROI_Approval__c, Requires_VP_ROI_Approval__c, Requires_CRO_ROI_Approval__c, ROI_Payback_Months__c
+  FROM SBQQ__QuoteLineGroup__c
+  WHERE Id = 'aCP3C000000HkGyWAK'
+  LIMIT 1

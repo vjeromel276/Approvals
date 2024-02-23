@@ -1,0 +1,59 @@
+<template>
+    <lightning-record-edit-form
+        object-api-name={objectApiName}
+        title="Initial Bulk Asset Creation"
+        icon-name="standard:asset"
+    >
+        <div class="slds-var-m-around_medium slds-var-p-around_medium">
+            <lightning-input
+                name="assetName"
+                label="Asset Name"
+                value={assetName}
+                onchange={handleInput}
+            ></lightning-input>
+            <lightning-combobox
+                name="dimension4"
+                label="Dimension 4(Market)"
+                options={dimension4Options}
+                value={dimension4}
+                onchange={handleInput}
+            ></lightning-combobox>
+            <lightning-input
+                type="number"
+                name="quantity"
+                label="Quantity"
+                value={quantity}
+                onchange={handleInput}
+            ></lightning-input>
+            <lightning-input
+                type="number"
+                name="originalQuantity"
+                label="Original Quantity"
+                value={originalQuantity}
+                onchange={handleInput}
+            ></lightning-input>
+            <div>
+                <lightning-input-field
+                    name="contactId"
+                    field-name="ContactId"
+                    value={contactId}
+                    onchange={handleInput}
+                ></lightning-input-field>
+
+                <lightning-input-field
+                    name="acctId"
+                    field-name="AccountId"
+                    value={acctId}
+                    onchange={handleInput}
+                ></lightning-input-field>
+            </div>
+            <div class="slds-var-p-left_large slds-var-p-top_small slds-var-p-bottom_small">
+                <lightning-button
+                    label="Create Bulk Asset"
+                    variant="brand"
+                    onclick={handleCreateBulkAsset}
+                ></lightning-button>
+            </div>
+        </div>
+    </lightning-record-edit-form>
+</template>
