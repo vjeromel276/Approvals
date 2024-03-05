@@ -1,0 +1,430 @@
+<template>
+    <template if:true={isFalse}>
+        <!-- modal -->
+        <template if:true={showModal}>
+            <div class="slds-modal slds-fade-in-open bigfootModal">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-text-heading_medium">Duplicate Serial Number Found!</h2>
+                    </header>
+                    <div class="slds-modal__content">
+                        <p>Serial Number: {serialInputVal} is already in use. Click okay to recieve this serial # or
+                            cancel
+                            to go back',</p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button
+                            label="Cancel"
+                            onclick={handleCancel}
+                        ></lightning-button>
+                        <lightning-button
+                            label="OK"
+                            variant="brand"
+                            onclick={handleOK}
+                        ></lightning-button>
+                    </footer>
+                </div>
+            </div>
+        </template>
+
+        <!-- loader-->
+        <template if:true={generalModalLoader}>
+            <div class="modalSpinner">
+                <lightning-spinner
+                    variant="brand"
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- input container -->
+        <lightning-card class="slds-container_x-large">
+            <!-- div container -->
+            <div class="slds-var-m-around_large">
+
+                <!--Titles and shit -->
+                <div>
+                    <template if:false={showScanBulkAsset}>
+
+                        <template if:false={showScanSerial}>
+                            <h2
+                                class="ScanHeading slds-text-heading_large  slds-text-align_center slds-var-m-bottom_small">
+                                Scan
+                                Tag
+                                Number</h2>
+                        </template>
+
+                        <template if:true={showScanSerial}>
+                            <h2
+                                class="ScanHeading slds-text-heading_large  slds-text-align_center slds-var-m-bottom_small">
+                                Scan
+                                Serial Number</h2>
+                        </template>
+
+                    </template>
+
+                    <template if:true={showScanBulkAsset}>
+                        <h2 class="ScanHeading slds-text-heading_large  slds-text-align_center slds-var-m-bottom_small">
+                            Receive
+                            to
+                            Existing Bulk Asset</h2>
+                    </template>
+                </div>
+
+
+                <!--errors-->
+                <div>
+                    <template if:true={showErrors}>
+                        <h2 class="rederror"> The Following Errors Have Occured:</h2>
+                    </template>
+
+                    <template if:true={errors}>
+
+                        <template
+                            for:each={errors}
+                            for:item="item"
+                        >
+                            <p
+                                class="rederror"
+                                key={error}
+                            > {item} </p>
+                        </template>
+                    </template>
+                </div>
+
+                <!-- input fields and shit-->
+                <div>
+                    <template if:false={showScanBulkAsset}>
+                        <!-- <lightning-record-edit-form object-api-name="Asset" id="fdefeds"  onload={hideModalLoader}>-->
+                        <!--<lightning-input-field field-name="Vendor_Account__c" onchange={handleVendorChange} label="Vendor" > </lightning-input-field>-->
+                        <!--<lightning-input-field field-name="minimum_stock_quantity__c"  onchange={handleMINQuantityChage} label="Minimum Stocking Quantity" aria-placeholder="Minimum Stocking Quantity"> </lightning-input-field>-->
+                        <!--</lightning-record-edit-form>-->
+                        <lightning-input
+                            type="number"
+                            name="Minimum Stocking Quantity"
+                            value={minStockQty}
+                            label="Minimum Stocking Quantity"
+                            class="slds-var-m-around_medium"
+                            onchange={handleMINQuantityChage}
+                        ></lightning-input>
+                    </template>
+
+                    <lightning-input
+                        type="number"
+                        name="Quantity"
+                        value={quantityVal}
+                        label="Quantity"
+                        class="slds-var-m-bottom_medium"
+                        onchange={quantityChange}
+                    ></lightning-input>
+                </div>
+
+                <!--mobile-->
+                <template if:true={isMobile}>
+                    <div class="slds-align_absolute-center slds-var-m-vertical_large">
+                        <lightning-button
+                            variant="brand"
+                            class="slds-var-m-left_x-small "
+                            disabled={scanButtonDisabled}
+                            icon-name="utility:scan"
+                            label="Scan Barcode"
+                            title="Open a camera view and look for a barcode to scan"
+                            onclick={handleBeginScanClick}
+                        ></lightning-button>
+                    </div>
+                </template>
+
+                <template if:true={showDescriptionBox}>
+                    <lightning-textarea
+                        name="inputDesc"
+                        label="Description"
+                        onchange={descChange}
+                        value={DescriptionBoxVal}
+                    ></lightning-textarea>
+                </template>
+
+                <template if:true={ChosenPoLine}>
+                    <p>Choose PO Line:</p>
+                    <div class="poLineGrid">
+                        <div class="poLineGridItem">
+                            <div class="poGrid">
+                                <div>Name</div>
+                                <div>{ChosenPoName}</div>
+                                <div></div>
+                            </div>
+                            <div class="poGrid">
+                                <div>Quantity</div>
+                                <div>{ChosenPoQuant}</div>
+                                <div><lightning-button
+                                        variant="brand"
+                                        class="slds-var-m-left_x-small"
+                                        label="Change"
+                                        title="Change"
+                                        onclick={handleResetTag}
+                                    ></lightning-button></div>
+                            </div>
+                            <div class="poGrid">
+                                <div>Description</div>
+                                <div>{ChosenPoDesc}</div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <br />
+
+                <template if:false={ChosenPoLine}>
+                    <template if:false={showDescriptionBox}>
+                        <p>Choose PO Line</p>
+                    </template>
+                    <ul class="poLineGrid">
+                        <template
+                            for:each={polines}
+                            for:item="item"
+                        >
+                            <li
+                                key={item}
+                                class="poLineGridItem"
+                            >
+                                <div class="poGrid ">
+                                    <div>Name:</div>
+                                    <div>{item.Name}</div>
+                                    <div></div>
+                                </div>
+                                <div class="poGrid ">
+                                    <div>Quantity:</div>
+                                    <div>{item.Quantity__c}</div>
+                                    <div><lightning-button
+                                            variant="brand"
+                                            class="slds-var-m-left_x-small"
+                                            label="Select"
+                                            title="Select"
+                                            data-record-id={item.Id}
+                                            data-record-name={item.Name}
+                                            data-record-description={item.Description__c}
+                                            onclick={selectPoLine}
+                                        ></lightning-button></div>
+                                </div>
+                                <div class="poGrid ">
+                                    <div>Description:</div>
+                                    <div>{item.Description__c}</div>
+                                    <div></div>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+
+
+                <!--creates Asset
+            ///a and the new assert number with that serial nuber -->
+                <template if:false={inputVal}>
+                    <!-- <div class="toggleBtn">
+                    <lightning-input type="toggle" label="Scan Serial Numbers" name="input1" onchange={serialAssetToggleChange}></lightning-input>
+                </div>-->
+
+                    <div class="slds-grid slds-gutters slds-var-p-around_small slds-wrap">
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2  ">
+                            <div class="slds-form-element">
+                                <label class="slds-checkbox_toggle slds-grid">
+                                    <span class="slds-form-element__label slds-m-bottom_none">Scan Serial Numbers</span>
+                                    <input
+                                        type="checkbox"
+                                        name="checkbox-toggle-16"
+                                        value="checkbox-toggle-16"
+                                        aria-describedby="checkbox-toggle-16"
+                                        checked={serialAssetScanOnly}
+                                        onchange={serialAssetToggleChange}
+                                    />
+                                    <span
+                                        id="checkbox-toggle-16"
+                                        class="slds-checkbox_faux_container"
+                                        aria-live="assertive"
+                                    >
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-checkbox_on">Enabled</span>
+                                        <span class="slds-checkbox_off">Disabled</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2  ">
+                            <div class="slds-form-element">
+                                <label class="slds-checkbox_toggle slds-grid">
+                                    <span class="slds-form-element__label slds-m-bottom_none">Scan Bulk Asset</span>
+                                    <input
+                                        type="checkbox"
+                                        name="checkbox-toggle-16"
+                                        value="checkbox-toggle-16"
+                                        aria-describedby="checkbox-toggle-16"
+                                        checked={showScanBulkAsset}
+                                        onchange={BulkAssetToggleChange}
+                                    />
+                                    <span
+                                        id="checkbox-toggle-1s6"
+                                        class="slds-checkbox_faux_container"
+                                        aria-live="assertive"
+                                    >
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-checkbox_on">Enabled</span>
+                                        <span class="slds-checkbox_off">Disabled</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </template>
+
+                <br>
+                <div></div>
+
+                <template if:true={inputVal}>
+                    <p>Scanned Tag:</p>
+
+                    <div class="ScannedTagGroup">
+
+                        <div><lightning-input
+                                disabled="disabled"
+                                class="scanTagInput"
+                                type="text"
+                                value={inputVal}
+                                data-fieldname="scanTagInput"
+                            > </lightning-input></div>
+
+
+                        <div><lightning-button
+                                variant="brand"
+                                onclick={handleResetTag}
+                                class="slds-var-m-left_x-small resetBtn"
+                                label="Clear"
+                                title="Clear"
+                            ></lightning-button></div>
+
+                    </div>
+                </template>
+
+
+
+                <template if:true={showScanAsset}>
+                    <template if:false={showScanSerial}>
+                        <div class="slds-var-m-top_large">
+                            <lightning-input
+                                type="text"
+                                name="Scan Tag Number "
+                                value={inputVal}
+                                label="Scan Tag Number "
+                                class="scanTagInputTest slds-var-m-bottom_medium"
+                                onchange={inputValChange}
+                                onkeypress={handleEnter}
+                                data-fieldname="scanTagInput"
+                                placeholder="Scan Tag Number"
+                            > </lightning-input>
+                        </div>
+                    </template>
+                </template>
+
+                <template if:true={showScanSerial}>
+                    <div class="slds-var-m-top_large">
+                        <label for="scanTagInputSerial">Scan Serial Number</label>
+                        <lightning-input
+                            class="scanTagInputSerial"
+                            type="text"
+                            onchange={serialInputValChange}
+                            label=""
+                            value={serialInputVal}
+                            onkeypress={handleSerialEnter}
+                            data-fieldname="scanTagInputSerial"
+                            placeholder="Scan Serial Number"
+                        > </lightning-input>
+                    </div>
+                </template>
+
+                <template if:true={showScanBulkAsset}>
+                    <div class="slds-var-m-top_large">
+                        <label for="scanTagInputBulkAsset">Scan Existing Bulk Asset</label>
+                        <lightning-input
+                            class="scanTagInput"
+                            type="text"
+                            onchange={BulkInputValChange}
+                            label=""
+                            value={bulkInputVal}
+                            onkeypress={handleBulkEnter}
+                            data-fieldname="scanTagInputBulkAsset"
+                            placeholder="Scan Existing Bulk Asset"
+                        > </lightning-input>
+                    </div>
+                </template>
+
+                <template if:true={AssetsRecieved}>
+
+
+                    <ul class="slds-var-m-around_large">
+                        <template
+                            for:each={AssetsRecieved}
+                            for:item="item"
+                        >
+                            <li
+                                key={item}
+                                class="slds-box"
+                            >
+                                <div class="slds-grid slds-gutters slds-var-p-around_small slds-wrap">
+                                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2  ">
+                                        <template if:true={item.isBulk}>
+                                            <div><b>Bulk: </b> <span> {item.oldquantity} Recieved to bulk asset: <a
+                                                        href={item.url}
+                                                        target="_blank"
+                                                    >{item.name}</a> Available Quantity To:
+                                                    {item.updatedquantity}</span>
+                                            </div>
+                                        </template>
+                                        <template if:false={item.isBulk}>
+                                            <div><b>Name: </b> <span> <a
+                                                        href={item.url}
+                                                        target="_blank"
+                                                    >{item.name}</a></span></div>
+                                            <div><b>Quantity: </b> <span>{item.quantity}</span></div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+
+
+                </template>
+
+                <!--Submit button and shit -->
+
+                <div slot="footer">
+                    <template if:true={inputVal}>
+                        <template if:true={showScanSerial}>
+                            <template if:false={serialAssetScanOnly}>
+                                <lightning-button
+                                    variant="brand"
+                                    class="slds-var-m-left_x-small"
+                                    label="Submit"
+                                    title="Submit"
+                                    onclick={submitScannedItem}
+                                ></lightning-button>
+                            </template>
+                        </template>
+                    </template>
+                    <lightning-button
+                        variant="brand"
+                        onclick={handleResetTag}
+                        class="slds-var-m-left_x-small"
+                        label="Reset"
+                        title="Reset"
+                    ></lightning-button>
+                </div>
+
+            </div>
+        </lightning-card>
+    </template>
+
+    <c-inventory-bulk-asset></c-inventory-bulk-asset>
+
+</template>

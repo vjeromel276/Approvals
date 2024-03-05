@@ -1,0 +1,35 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <form onsubmit={submitForm}>
+        <div class="slds-var-m-around_small">
+            <label for="quantity">Quantity</label>
+            <input
+                id="quantity"
+                type="text"
+                value={inputQuantity}
+                onchange={updateQuantity}
+            />
+            <!-- <button type="submit" onclick={updateQuantity}>Enter</button> -->
+        </div>
+        <div class="slds-var-m-around_small">
+            <label for="description">Description</label>
+            <input
+                id="description"
+                type="text"
+                value={description}
+                onchange={updateDescription}
+            />
+            <!-- <button type="submit" onclick={updateDescription}>Enter</button> -->
+        </div>
+        <div class="slds-var-m-around_small">
+            <label for="tagNumber">Tag Number</label>
+            <input
+                id="tagNumber"
+                type="text"
+                value={tagNumber}
+                onchange={updateTagNumber}
+            />
+            <!-- <button type="submit" onclick={updateDescription}>Enter</button> -->
+        </div>
+    </form>
+</template>

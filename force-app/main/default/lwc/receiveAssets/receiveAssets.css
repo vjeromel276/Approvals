@@ -1,0 +1,76 @@
+.poLineGrid {
+    max-width: 100%;
+
+}
+
+.poLineGridItem {
+    background: whitesmoke;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 15px 0px;
+}
+
+.poGrid div {
+    flex: auto;
+    text-align: center;
+    min-width: 33%;
+    text-align: left;
+}
+.poGrid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+}
+
+.ScannedTagGroup {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.ScannedTagGroup.scanTagInput {
+    min-width: 50%;
+}
+
+.ScannedTagGroup div {
+    flex: auto;
+   
+}
+.resetBtn {
+    position: relative;
+    top: 7px;
+    margin-left: 20px;
+}
+.toggleBtn {
+
+    float: right;
+}
+
+.rederror {
+    color: red;
+    font-weight: bold;
+    display: block;
+}
+
+
+.bigfootModal .slds-modal__content {
+    padding: 20px;
+}
+
+.bigfootModal header {
+    border-top: 2px solid rgba(154, 39, 152, 1);
+    border-right: 2px solid rgba(154, 39, 152, 1);
+    border-left: 2px solid rgba(154, 39, 152, 1);
+}
+
+.bigfootModal footer {
+    border-bottom: 2px solid rgba(154, 39, 152, 1);
+    border-right: 2px solid rgba(154, 39, 152, 1);
+    border-left: 2px solid rgba(154, 39, 152, 1);
+}
+
+.bigfootModal .slds-modal__content {
+    border-right: 2px solid rgba(154, 39, 152, 1);
+    border-left: 2px solid rgba(154, 39, 152, 1);
+}
